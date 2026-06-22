@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #FCF9F2;
+  --bg-secondary: #FFFFFF;
+  --text-primary: #2D2A26;
+  --text-secondary: #7A7570;
+  --text-tertiary: #A69A84;
+  --border-light: #EFEBE4;
+  --border-medium: #E0D9CE;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
