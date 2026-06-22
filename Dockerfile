@@ -4,11 +4,11 @@ WORKDIR /app
 
 # Install dependencies (termasuk devDependencies agar tsx bisa berjalan)
 COPY package*.json ./
-RUN npm install
 
-# Copy Prisma schema & generate client
+# Copy Prisma schema terlebih dahulu agar postinstall "prisma generate" bisa berjalan
 COPY prisma ./prisma
-RUN npx prisma generate
+
+RUN npm install
 
 # Copy semua source code
 COPY . .
