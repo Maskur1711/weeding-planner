@@ -99,8 +99,9 @@ async function main() {
     const { connection, lastDisconnect, qr } = update;
 
     if (qr) {
+      globalQrString = qr;
       qrcode.generate(qr, { small: true });
-      logger.info("📷 Scan QR code di atas untuk pairing...");
+      logger.info("📷 Buka URL aplikasi web ini di browser untuk melihat QR Code yang rapi!");
     }
 
     if (connection === "close") {
@@ -186,6 +187,8 @@ async function main() {
   });
 }
 
+let globalQrString = "";
+
 main().catch((err) => {
   logger.error({ err }, "💥 Fatal error di bot");
   process.exit(1);
@@ -196,9 +199,40 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.get("/", (req, res) => {
-  res.send("Bot is running!");
+  if (globalQrString) {
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Scan QR Bot</title>
+        <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+        <style>
+          body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #f0f2f5; }
+          .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: center; }
+          #qr { margin: 20px auto; display: inline-block; }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <h2>Scan QR Code untuk Bot WhatsApp</h2>
+          <p>Buka WhatsApp > Tautkan Perangkat > Arahkan kamera ke QR ini.</p>
+          <div id="qr"></div>
+          <p><small>Jika QR sudah di-scan, refresh halaman ini.</small></p>
+        </div>
+        <script>
+          var qr = qrcode(0, 'L');
+          qr.addData('${globalQrString}');
+          qr.make();
+          document.getElementById('qr').innerHTML = qr.createImgTag(5, 0);
+        </script>
+      </body>
+      </html>
+    `);
+  } else {
+    res.send("Bot sedang berjalan dan terhubung ke WhatsApp, atau sedang loading.");
+  }
 });
 
 app.listen(PORT, () => {
-  logger.info(`🌐 Dummy HTTP server running on port ${PORT}`);
+  logger.info(`🌐 Web interface berjalan di port ${PORT}`);
 });
