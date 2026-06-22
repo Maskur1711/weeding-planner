@@ -84,44 +84,39 @@ Bot akan membalas konfirmasi dan data langsung muncul di dashboard.
 | `Gedung total 25.000.000` | ✅ Gedung — Rp 25.000.000 (Venue) |
 | `halo` | ❌ Format salah |
 
-## 🚂 Deploy ke Railway
+## 🚀 Deploy ke Production (Gratis)
 
-### Step 1: Buat Project & Database
-1. Login ke [railway.app](https://railway.app), buat project baru
-2. **Add Service → PostgreSQL** — tunggu sampai running
-3. Klik service Postgres → tab **Variables** → copy value `DATABASE_URL`
+Direkomendasikan menggunakan kombinasi **Aiven** (Database), **Vercel** (Web), dan **Fly.io** (Bot) untuk deployment gratis 24/7.
 
-### Step 2: Deploy Web (Dashboard)
-1. **New Service → Deploy from GitHub repo** → pilih repo ini
-2. Root Directory: `/` (default)
-3. Build Command: `npm install && npm run build`
-4. Start Command: `npm run start:web`
-5. Tab **Variables** → tambah:
-   - `DATABASE_URL` = paste dari Postgres service
+### Step 1: Database (Aiven)
+1. Buat free PostgreSQL database di [Aiven](https://aiven.io/).
+2. Copy `Service URI` dari dashboard Aiven.
+3. Jalankan `npx prisma db push` di lokal Anda menggunakan URL tersebut untuk membuat tabel.
 
-### Step 3: Deploy Bot (WhatsApp)
-1. **New Service → Deploy from GitHub repo** → pilih repo yang sama
-2. Root Directory: `/` (default)
-3. Build Command: `npm install`
-4. Start Command: `npm run start:bot`
-5. Tab **Variables** → tambah:
-   - `DATABASE_URL` = paste dari Postgres service
-   - `AUTH_FOLDER` = `/data/auth_info`
-6. **Buat Volume** → mount ke path `/data` (supaya auth Baileys survive redeploy)
+### Step 2: Web Dashboard (Vercel)
+1. Login ke [Vercel](https://vercel.com/) dan import repository GitHub ini.
+2. Di bagian pengaturan sebelum deploy, tambahkan **Environment Variable** `DATABASE_URL` dengan isi URL Aiven Anda.
+3. Deploy! Dashboard akan langsung online.
 
-### Step 4: Bikin Tabel
-1. Buka **shell** di salah satu service (atau Railway CLI)
-2. Jalankan: `npx prisma db push`
-3. Atau jalankan sekali di lokal dengan `DATABASE_URL` Railway
+### Step 3: Bot WhatsApp (Fly.io)
+Proyek ini sudah dilengkapi `Dockerfile` untuk mempermudah deploy bot.
+1. Install [flyctl](https://fly.io/docs/hands-on/install-flyctl/) di komputer Anda.
+2. Jalankan `fly auth login`, lalu `fly launch` (kosongkan nama, pilih region `sin` (Singapore), pilih **No** untuk database & Redis, pilih **No** untuk deploy sekarang).
+3. Buat volume untuk menyimpan sesi QR:
+   `fly volumes create auth_data --region sin --size 1`
+4. Buka file `fly.toml` yang baru saja terbuat, tambahkan di baris paling bawah:
+   ```toml
+   [mounts]
+     source = "auth_data"
+     destination = "/app/auth_info"
 
-### Step 5: Pairing WhatsApp
-1. Buka **Logs** di bot service
-2. Scan QR code yang muncul di log
-3. Setelah `✅ WhatsApp terhubung!` muncul, bot sudah aktif
-
-### Step 6: Selesai!
-- Buka URL web service → dashboard sudah online
-- Kirim pesan ke WA bot → data muncul di dashboard
+   [env]
+     AUTH_FOLDER = "/app/auth_info"
+   ```
+5. Set `DATABASE_URL` rahasia di server Fly.io:
+   `fly secrets set DATABASE_URL="URL_AIVEN_ANDA"`
+6. Deploy bot: `fly deploy`
+7. Buka `fly logs` dan scan QR Code yang muncul menggunakan HP Anda. Selesai!
 
 ## 🔧 Konfigurasi Environment
 
@@ -162,4 +157,4 @@ Bot akan membalas konfirmasi dan data langsung muncul di dashboard.
 - [Recharts](https://recharts.org/) — grafik
 - [Prisma](https://www.prisma.io/) — ORM
 - [@whiskeysockets/baileys](https://github.com/WhiskeySockets/Baileys) — WhatsApp Web API
-- [Railway](https://railway.app/) — deployment
+- **Deployment**: [Aiven](https://aiven.io/) (DB), [Vercel](https://vercel.com/) (Web), [Fly.io](https://fly.io/) (Bot)
