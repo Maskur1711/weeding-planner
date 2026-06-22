@@ -16,5 +16,8 @@ COPY . .
 # Buat folder auth_info
 RUN mkdir -p /app/auth_info
 
+# Expose port untuk web server (dibutuhkan oleh Back4App / Render)
+EXPOSE 3001
+
 # Jalankan bot
 CMD ["npm", "run", "start:bot"]
