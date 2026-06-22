@@ -7,6 +7,7 @@ import makeWASocket, {
 import type { WAMessage, ConnectionState } from "@whiskeysockets/baileys";
 import qrcode from "qrcode-terminal";
 import pino from "pino";
+import express from "express";
 import { prisma } from "../lib/db";
 import { parseExpenseMessage } from "../lib/parser";
 import { formatRupiah, formatDate } from "../lib/format";
@@ -188,4 +189,16 @@ async function main() {
 main().catch((err) => {
   logger.error({ err }, "💥 Fatal error di bot");
   process.exit(1);
+});
+
+// Render Web Service requires binding to a PORT
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+app.get("/", (req, res) => {
+  res.send("Bot is running!");
+});
+
+app.listen(PORT, () => {
+  logger.info(`🌐 Dummy HTTP server running on port ${PORT}`);
 });

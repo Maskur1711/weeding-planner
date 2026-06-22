@@ -98,14 +98,18 @@ Direkomendasikan menggunakan kombinasi **Aiven** (Database), **Vercel** (Web), d
 2. Di bagian pengaturan sebelum deploy, tambahkan **Environment Variable** `DATABASE_URL` dengan isi URL Aiven Anda.
 3. Deploy! Dashboard akan langsung online.
 
-### Step 3: Bot WhatsApp (Koyeb)
-Proyek ini sudah dilengkapi `Dockerfile` untuk mempermudah deploy bot.
-1. Login ke [Koyeb](https://app.koyeb.com/) dan klik **Deploy / Create Web Service**.
-2. Pilih metode **GitHub** dan pilih repository ini.
-3. Di bagian **Builder**, pilih **Dockerfile**.
-4. Di bagian **Environment Variables**, tambahkan `DATABASE_URL` dengan isi URL Aiven Anda.
-5. Klik **Deploy**.
-6. Setelah selesai, buka tab **Terminal/Logs** di Koyeb, dan scan QR Code yang muncul di log menggunakan HP Anda. Selesai!
+### Step 3: Bot WhatsApp (Render)
+Proyek ini sudah dilengkapi *dummy HTTP server* dan `Dockerfile` agar bisa di-deploy gratis di Render.
+1. Login ke [Render](https://render.com/) dan buat **Web Service** baru.
+2. Hubungkan akun GitHub Anda dan pilih repository ini.
+3. Di bagian konfigurasi:
+   - Language: `Docker`
+   - Instance Type: `Free`
+4. Di bagian **Environment Variables**, tambahkan:
+   - `DATABASE_URL` = *(isi dengan URL Aiven Anda)*
+5. Klik **Create Web Service**.
+6. Setelah selesai build, buka tab **Logs** di Render, lalu scan QR Code yang muncul menggunakan WhatsApp di HP Anda.
+7. **Penting:** Render versi gratis akan *sleep* jika tidak ada akses HTTP selama 15 menit. Agar bot selalu hidup 24/7, daftarkan URL Render Anda (misal `https://wedding-bot-xyz.onrender.com`) ke layanan gratis seperti [cron-job.org](https://cron-job.org) untuk di-ping setiap 14 menit.
 
 ## 🔧 Konfigurasi Environment
 
@@ -146,4 +150,4 @@ Proyek ini sudah dilengkapi `Dockerfile` untuk mempermudah deploy bot.
 - [Recharts](https://recharts.org/) — grafik
 - [Prisma](https://www.prisma.io/) — ORM
 - [@whiskeysockets/baileys](https://github.com/WhiskeySockets/Baileys) — WhatsApp Web API
-- **Deployment**: [Aiven](https://aiven.io/) (DB), [Vercel](https://vercel.com/) (Web), [Koyeb](https://koyeb.com/) (Bot)
+- **Deployment**: [Aiven](https://aiven.io/) (DB), [Vercel](https://vercel.com/) (Web), [Render](https://render.com/) (Bot)
