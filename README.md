@@ -86,7 +86,7 @@ Bot akan membalas konfirmasi dan data langsung muncul di dashboard.
 
 ## 🚀 Deploy ke Production (Gratis)
 
-Direkomendasikan menggunakan kombinasi **Aiven** (Database), **Vercel** (Web), dan **Fly.io** (Bot) untuk deployment gratis 24/7.
+Direkomendasikan menggunakan kombinasi **Aiven** (Database), **Vercel** (Web), dan **Koyeb** (Bot) untuk deployment gratis 24/7.
 
 ### Step 1: Database (Aiven)
 1. Buat free PostgreSQL database di [Aiven](https://aiven.io/).
@@ -98,25 +98,14 @@ Direkomendasikan menggunakan kombinasi **Aiven** (Database), **Vercel** (Web), d
 2. Di bagian pengaturan sebelum deploy, tambahkan **Environment Variable** `DATABASE_URL` dengan isi URL Aiven Anda.
 3. Deploy! Dashboard akan langsung online.
 
-### Step 3: Bot WhatsApp (Fly.io)
+### Step 3: Bot WhatsApp (Koyeb)
 Proyek ini sudah dilengkapi `Dockerfile` untuk mempermudah deploy bot.
-1. Install [flyctl](https://fly.io/docs/hands-on/install-flyctl/) di komputer Anda.
-2. Jalankan `fly auth login`, lalu `fly launch` (kosongkan nama, pilih region `sin` (Singapore), pilih **No** untuk database & Redis, pilih **No** untuk deploy sekarang).
-3. Buat volume untuk menyimpan sesi QR:
-   `fly volumes create auth_data --region sin --size 1`
-4. Buka file `fly.toml` yang baru saja terbuat, tambahkan di baris paling bawah:
-   ```toml
-   [mounts]
-     source = "auth_data"
-     destination = "/app/auth_info"
-
-   [env]
-     AUTH_FOLDER = "/app/auth_info"
-   ```
-5. Set `DATABASE_URL` rahasia di server Fly.io:
-   `fly secrets set DATABASE_URL="URL_AIVEN_ANDA"`
-6. Deploy bot: `fly deploy`
-7. Buka `fly logs` dan scan QR Code yang muncul menggunakan HP Anda. Selesai!
+1. Login ke [Koyeb](https://app.koyeb.com/) dan klik **Deploy / Create Web Service**.
+2. Pilih metode **GitHub** dan pilih repository ini.
+3. Di bagian **Builder**, pilih **Dockerfile**.
+4. Di bagian **Environment Variables**, tambahkan `DATABASE_URL` dengan isi URL Aiven Anda.
+5. Klik **Deploy**.
+6. Setelah selesai, buka tab **Terminal/Logs** di Koyeb, dan scan QR Code yang muncul di log menggunakan HP Anda. Selesai!
 
 ## 🔧 Konfigurasi Environment
 
@@ -157,4 +146,4 @@ Proyek ini sudah dilengkapi `Dockerfile` untuk mempermudah deploy bot.
 - [Recharts](https://recharts.org/) — grafik
 - [Prisma](https://www.prisma.io/) — ORM
 - [@whiskeysockets/baileys](https://github.com/WhiskeySockets/Baileys) — WhatsApp Web API
-- **Deployment**: [Aiven](https://aiven.io/) (DB), [Vercel](https://vercel.com/) (Web), [Fly.io](https://fly.io/) (Bot)
+- **Deployment**: [Aiven](https://aiven.io/) (DB), [Vercel](https://vercel.com/) (Web), [Koyeb](https://koyeb.com/) (Bot)
