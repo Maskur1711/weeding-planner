@@ -2,7 +2,6 @@ import { Boom } from "@hapi/boom";
 import makeWASocket, {
   DisconnectReason,
   fetchLatestBaileysVersion,
-  useMultiFileAuthState,
 } from "@whiskeysockets/baileys";
 import type { WAMessage, ConnectionState } from "@whiskeysockets/baileys";
 import qrcode from "qrcode-terminal";
@@ -11,6 +10,7 @@ import express from "express";
 import { prisma } from "../lib/db";
 import { parseExpenseMessage } from "../lib/parser";
 import { formatRupiah, formatDate } from "../lib/format";
+import { usePrismaAuthState } from "./usePrismaAuthState";
 
 // ---------------------------------------------------------------------------
 // Config dari env
@@ -77,9 +77,9 @@ function isRelevant(jid: string, msg: WAMessage): boolean {
 // Main — start Baileys socket
 // ---------------------------------------------------------------------------
 async function main() {
-  logger.info(`🔓 Auth folder: ${AUTH_FOLDER}`);
+  logger.info(`🔓 Auth state: Prisma PostgreSQL`);
 
-  const { state, saveCreds } = await useMultiFileAuthState(AUTH_FOLDER);
+  const { state, saveCreds } = await usePrismaAuthState();
 
   const { version } = await fetchLatestBaileysVersion();
   logger.info(`📱 Baileys version: ${version}`);

@@ -21,3 +21,4 @@ EXPOSE 3001
 
 # Jalankan bot
 CMD ["npm", "run", "start:bot"]
+    

@@ -18,3 +18,8 @@ model Transaction {
   @@index([kategori])
   @@index([createdAt])
 }
+
+model AuthState {
+  id    String @id
+  value String
+}
